@@ -1,0 +1,12 @@
+{
+  "navigation": {
+    "docs": "API დოკუმენტაცია"
+  },
+  "docs": {
+    "all_required": "ყველა ველი სავალდებულოა",
+    "user": {
+      "title": "მომხმარებელი",
+      "registration": "რეგისტრაცია"
+    }
+  }
+}

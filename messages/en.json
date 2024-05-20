@@ -1,0 +1,11 @@
+{
+  "navigation": {
+    "docs": "API Docs"
+  },
+  "docs": {
+    "user": {
+      "title": "user",
+      "registration": "registration"
+    }
+  }
+}
