@@ -3,9 +3,19 @@
     "docs": "API Docs"
   },
   "docs": {
+    "all_required": "All fields required",
+    "required_color": "Required fields are marked with green color",
+    "required_fields": "Required fields",
+    "internal_server_error": "Internal Server Error",
     "user": {
-      "title": "user",
-      "registration": "registration"
+      "title": "User",
+      "registration": "Registration",
+      "registration_success": "Registration success"
     }
+  },
+  "validations": {
+    "min2": "Min 2 symbols",
+    "email_used": "Email already used",
+    "required": "Field is required"
   }
 }

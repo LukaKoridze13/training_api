@@ -4,9 +4,18 @@
   },
   "docs": {
     "all_required": "ყველა ველი სავალდებულოა",
+    "required_color": "სავალდებულო ველები მონიშნულია მწვანე ფერით",
+    "required_fields": "სავალდებულო ველები",
+    "internal_server_error": "სერვერზე დაფიქრსირდა შეცდომა",
     "user": {
       "title": "მომხმარებელი",
-      "registration": "რეგისტრაცია"
+      "registration": "რეგისტრაცია",
+      "registration_success": "რეგისტრაცია წარმატებით დასრულდა"
     }
+  },
+  "validations": {
+    "min2": "მინ. 2 სიმბოლო",
+    "email_used": "ელ.ფოსტა გამოყენებულია",
+    "required": "შევსება სავალდებულოა"
   }
 }

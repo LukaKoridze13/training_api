@@ -1,18 +1,26 @@
 "use client";
 import React from "react";
-import { AccordionItem, Card, CardBody, CardHeader, Chip, Code, Divider, Snippet } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Chip, Code, Divider, Snippet } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 
 type MethodColor = "success" | "primary" | "warning" | "danger" | "default" | "secondary";
+
+interface ResponseObj {
+  status: "success" | "error";
+  code: number;
+  body: Object;
+}
 
 interface RequestProps {
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
-  requestBody?: {
-    required: "all" | "some";
-  };
+  requestBody?: "all" | string[];
+  bodyObject?: Object;
+  responses: ResponseObj[];
 }
 
-const Request = ({ method, path }: RequestProps) => {
+const Request = ({ method, path, requestBody, bodyObject, responses }: RequestProps) => {
+  const t = useTranslations("docs");
   let methodColor: MethodColor = "success";
   if (method === "GET") methodColor = "primary";
   if (method === "PUT") methodColor = "warning";
@@ -26,55 +34,32 @@ const Request = ({ method, path }: RequestProps) => {
       <Snippet className="w-fit" variant="bordered" color="success" symbol={false}>
         {API + path}
       </Snippet>
-      <Card classNames={{ base: "border-green-600 border w-[600px]" }}>
-        <CardHeader className="flex gap-3">
-          <p>Request Body - All Fields Required</p>
-        </CardHeader>
-        <Divider />
-        <CardBody>
-          <Snippet symbol={false}>
-            <span>{"{"}</span>
-            <span>&nbsp; name: "Luka",</span>
-            <span>&nbsp; surname: "Koridze",</span>
-            <span>&nbsp; email: "luka.koridze@gmail.com",</span>
-            <span>&nbsp; password: "Password*123",</span>
-            <span>&nbsp; repeat_password: "Password*123"</span>
-            <span>{"}"}</span>
-          </Snippet>
-        </CardBody>
-      </Card>
+      {requestBody && (
+        <Card classNames={{ base: "border-green-600 border w-[600px]" }}>
+          <CardHeader className="flex gap-3">
+            <p>Request Body {requestBody === "all" ? " - " + t("all_required") : " - " + t("required_color")}</p>
+          </CardHeader>
+          <Divider />
+          <CardBody>{bodyObject && formatObjectToJSX(bodyObject, requestBody)}</CardBody>
+        </Card>
+      )}
       <Card classNames={{ base: "border-green-600 border w-[600px]" }}>
         <CardHeader className="flex gap-3">
           <p>Response</p>
         </CardHeader>
         <Divider />
         <CardBody className="flex flex-col gap-6">
+          {responses.map((response, index) => (
+            <div key={index + "resp" + JSON.stringify(response)} className="flex flex-col gap-4">
+              <Chip color={response.status === "success" ? "success" : "danger"}>
+                {response.status === "success" ? "Success" : "Error"}: {response.code}
+              </Chip>
+              {formatObjectToJSX(response.body)}
+            </div>
+          ))}
           <div className="flex flex-col gap-4">
-            <Chip color="success">Success: 201</Chip>
-            <Code className="w-fit">
-              <span>{"{"}</span>
-              <span>&nbsp; message: "რეგისტრაცია წარმატებით დასრულდა"</span>
-              <span>{"}"}</span>
-            </Code>
-          </div>
-          <div className="flex flex-col gap-4">
-            <Chip color="danger">Error: 400</Chip>
-            <Snippet symbol={false}>
-              <span>{"{"}</span>
-              <span>&nbsp; errors: {"{"}</span>
-              <span>&nbsp; &nbsp; name: "მინ. 2 სიმბოლო",</span>
-              <span>&nbsp; &nbsp; email: "ელ. ფოსტა გამოყენებულია",</span>
-              <span>&nbsp; {"}"}</span>
-              <span>{"}"}</span>
-            </Snippet>
-          </div>
-          <div className="flex flex-col gap-4">
-            <Chip color="danger">Error: 500</Chip>
-            <Snippet symbol={false}>
-              <span>{"{"}</span>
-              <span>&nbsp; error: "სერვერზე დაფიქსირდა შეცდომა",</span>
-              <span>{"}"}</span>
-            </Snippet>
+            <Chip color="danger">Error 500</Chip>
+            {formatObjectToJSX({ error: t("internal_server_error") })}
           </div>
         </CardBody>
       </Card>
@@ -82,25 +67,49 @@ const Request = ({ method, path }: RequestProps) => {
   );
 };
 
-function formatObjectToHTML(obj: any) {
-  const entries = Object.entries(obj);
-
-  const formattedEntries = entries.map(([key, value]) => (
-    <span key={key}>
-      {/* @ts-ignore */}
-      &nbsp; {key}: "{value}",
-      <br />
-    </span>
-  ));
-
+const formatObjectToJSX = (obj: any, required?: "all" | string[]) => {
   return (
-    <div>
+    <Code>
       <span>{"{"}</span>
+      {Object.entries(obj).map(([key, value], index) => {
+        if (typeof value === "object") {
+          return (
+            <>
+              <br />
+              <span>
+                &nbsp; <span className={`${required && required !== "all" ? (!required?.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>{key}:</span> {"{"}
+              </span>
+              {/* @ts-ignore */}
+              {Object.entries(value).map(([key, value], index) => (
+                <>
+                  <br />
+                  <span key={index} className={`${required && required !== "all" ? (!required?.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>
+                    {/* @ts-ignore */}
+                    &nbsp; &nbsp; {key}: &quot;{value}&quot;{index < Object.entries(value).length - 1 && ","}
+                  </span>
+                </>
+              ))}
+              <br />
+              <span>&nbsp; {"}"}</span>
+            </>
+          );
+        } else {
+          return (
+            <>
+              <br />
+              {/* @ts-ignore */}
+              <span key={index} className={`${required && required !== "all" ? (!required?.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>
+                {/* @ts-ignore */}
+                &nbsp; {key}: &quot;{value}&quot;{index < Object.entries(obj).length - 1 && ","}
+              </span>
+            </>
+          );
+        }
+      })}
       <br />
-      {formattedEntries}
       <span>{"}"}</span>
-    </div>
+    </Code>
   );
-}
+};
 
 export default Request;
