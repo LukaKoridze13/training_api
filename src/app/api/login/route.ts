@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: messages.all_fields_required + " email, password" }), { status: 400 });
     }
 
-    const user = await UserModel.findOne<D_User>({ email }).select("-password");
+    const user = await UserModel.findOne<D_User>({ email });
     if (!user) {
       return new Response(JSON.stringify({ error: messages.invalid_credentials }), { status: 400 });
     }
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: messages.invalid_credentials }), { status: 400 });
     }
     const payload = JSON.parse(JSON.stringify(user));
+    delete payload.password;
 
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET || "", { expiresIn: API_CONFIG.accessTokenExpiration });
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH || "", { expiresIn: "365d" });
