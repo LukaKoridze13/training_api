@@ -9,17 +9,20 @@ interface ResponseObj {
   status: "success" | "error";
   code: number;
   body: Object;
+  required?: "all" | string[];
 }
 
-interface RequestProps {
+export interface RequestProps {
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
   requestBody?: "all" | string[];
   bodyObject?: Object;
   responses: ResponseObj[];
+  description?: string;
+  auth?: boolean;
 }
 
-const Request = ({ method, path, requestBody, bodyObject, responses }: RequestProps) => {
+const Request = ({ method, path, requestBody, bodyObject, responses, description, auth = false }: RequestProps) => {
   const t = useTranslations("docs");
   let methodColor: MethodColor = "success";
   if (method === "GET") methodColor = "primary";
@@ -28,6 +31,7 @@ const Request = ({ method, path, requestBody, bodyObject, responses }: RequestPr
   const API = process.env.NEXT_PUBLIC_API;
   return (
     <div className="flex flex-col gap-3">
+      {description && <p>{description}</p>}
       <Chip color={methodColor} size="lg">
         {method}
       </Chip>
@@ -54,9 +58,15 @@ const Request = ({ method, path, requestBody, bodyObject, responses }: RequestPr
               <Chip color={response.status === "success" ? "success" : "danger"}>
                 {response.status === "success" ? "Success" : "Error"}: {response.code}
               </Chip>
-              {formatObjectToJSX(response.body)}
+              {formatObjectToJSX(response.body, response.required)}
             </div>
           ))}
+          {auth && (
+            <div className="flex flex-col gap-4">
+              <Chip color="danger">Error 401</Chip>
+              {formatObjectToJSX({ error: t("unauthorized") })}
+            </div>
+          )}
           <div className="flex flex-col gap-4">
             <Chip color="danger">Error 500</Chip>
             {formatObjectToJSX({ error: t("internal_server_error") })}
@@ -85,7 +95,7 @@ const formatObjectToJSX = (obj: any, required?: "all" | string[]) => {
                   <br />
                   <span key={index} className={`${required && required !== "all" ? (!required?.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>
                     {/* @ts-ignore */}
-                    &nbsp; &nbsp; {key}: &quot;{value}&quot;{index < Object.entries(value).length - 1 && ","}
+                    &nbsp; &nbsp; {key}: {typeof value === "string" ? `"${value}"` : value} {index < Object.entries(value).length - 1 && ","}
                   </span>
                 </>
               ))}
@@ -100,7 +110,7 @@ const formatObjectToJSX = (obj: any, required?: "all" | string[]) => {
               {/* @ts-ignore */}
               <span key={index} className={`${required && required !== "all" ? (!required?.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>
                 {/* @ts-ignore */}
-                &nbsp; {key}: &quot;{value}&quot;{index < Object.entries(obj).length - 1 && ","}
+                &nbsp; {key}: {typeof value === "string" ? `"${value}"` : value}{index < Object.entries(obj).length - 1 && ","}
               </span>
             </>
           );

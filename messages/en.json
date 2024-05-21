@@ -2,15 +2,29 @@
   "navigation": {
     "docs": "API Docs"
   },
+  "docs_intro": {
+    "title": "Introduction",
+    "description": "Documentation helps you understand API operation principles and guides you through the integration process. The API is organized by topics, where you can find all requests related to this topic. Please note that the requests marked with a 'lock' symbol require authorization (with a Bearer Token obtained by the user when logging into the system). Also, in the examples of the given objects, all required fields are highlighted in bold. If all fields are in black text, it is optional. The API supports two languages, English (en) and Georgian (ka). To change the language, the Accept-Language header in the request must include the corresponding language code (en, ka)."
+  },
   "docs": {
     "all_required": "All fields required",
     "required_color": "Required fields are marked with green color",
     "required_fields": "Required fields",
     "internal_server_error": "Internal Server Error",
+    "unauthorized": "Unauthorized",
+    "success": "Request success",
+    "bad_request": "Some error not related to the exact key",
     "user": {
       "title": "User",
       "registration": "Registration",
-      "registration_success": "Registration success"
+      "registration_success": "Registration success",
+      "login": "Authorization",
+      "login_success": "Authorization success",
+      "invalid_credentials": "Invalid credentials",
+      "login_description": "After user authorization you will receive access token, which you can use to access other API endpoints. Access token should be passed in Authorization header as Bearer token. Also, you can use refresh token to get new access token after it expires. Expiration time is included in response.",
+      "refresh_token": "New access token",
+      "refresh_description": "After access token expires, you can use refresh token to get new access token. Refresh token should be passed in Authorization header as Bearer token.",
+      "data": "User data"
     }
   },
   "validations": {
