@@ -18,6 +18,8 @@
     "forbidden": "Access forbidden",
     "user": {
       "title": "User",
+      "feed": "Post Feed",
+      "feed_desc": "",
       "registration": "Registration",
       "registration_success": "Registration success",
       "login": "Authorization",

@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import UserModel from "./models/UserModel";
+import PostModel from "./models/PostModel";
 
 declare global {
   var mongoose: any;
@@ -30,6 +32,8 @@ async function ConnectMongo() {
   }
   try {
     cached.conn = await cached.promise;
+    UserModel;
+    PostModel;
   } catch (e) {
     cached.promise = null;
     throw e;

@@ -82,14 +82,27 @@ const Request = ({ method, path, requestBody, bodyObject, responses, description
 
 const formatObjectToJSX = (obj: any, required?: "all" | string[]) => {
   const formatValue = (value: any, indentLevel: number) => {
-    if (typeof value === "object" && value !== null) {
+    if (Array.isArray(value)) {
+      return (
+        <>
+          <span>[</span>
+          {value.map((item: any, index: number) => (
+            <div key={index} style={{ paddingLeft: `${16}px` }}>
+              {formatValue(item, indentLevel + 1)}
+              {index < value.length - 1 && ","}
+            </div>
+          ))}
+          <span>]</span>
+        </>
+      );
+    } else if (typeof value === "object" && value !== null) {
       return (
         <>
           <span>{"{"}</span>
           {Object.entries(value).map(([nestedKey, nestedValue], index) => (
-            <div key={nestedKey} style={{ paddingLeft: `${indentLevel + 1 * 16}px` }}>
+            <div key={nestedKey} style={{ paddingLeft: `16px` }}>
               <span className={`${required && required !== "all" ? (!required.includes(nestedKey) ? "text-amber-500" : "text-emerald-500") : ""}`}>
-                {nestedKey}: {formatValue(nestedValue, indentLevel + 2)}
+                {nestedKey}: {formatValue(nestedValue, indentLevel + 1)}
                 {index < Object.entries(value).length - 1 && ","}
               </span>
             </div>
@@ -104,18 +117,26 @@ const formatObjectToJSX = (obj: any, required?: "all" | string[]) => {
 
   return (
     <Code>
-      <span>{"{"}</span>
-      {Object.entries(obj).map(([key, value], index) => (
-        <div key={key} className="pl-4">
-          <span className={`${required && required !== "all" ? (!required.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>
-            {key}: {formatValue(value, 1)}
-            {index < Object.entries(obj).length - 1 && ","}
-          </span>
-        </div>
-      ))}
-      <span>{"}"}</span>
+      {Array.isArray(obj) ? <span>[</span> : <span>{"{"}</span>}
+      {Array.isArray(obj)
+        ? obj.map((item: any, index: number) => (
+            <div key={index} style={{ paddingLeft: `${16}px` }}>
+              {formatValue(item, 0)}
+              {index < obj.length - 1 && ","}
+            </div>
+          ))
+        : Object.entries(obj).map(([key, value], index) => (
+            <div key={key} className="pl-4">
+              <span className={`${required && required !== "all" ? (!required.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>
+                {key}: {formatValue(value, 1)}
+                {index < Object.entries(obj).length - 1 && ","}
+              </span>
+            </div>
+          ))}
+      {Array.isArray(obj) ? <span>]</span> : <span>{"}"}</span>}
     </Code>
   );
 };
+
 
 export default Request;
