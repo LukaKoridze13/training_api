@@ -1,5 +1,6 @@
 "use client";
 import Request, { RequestProps } from "@/components/docs/Request";
+import PostmanButton from "@/components/PostmanButton";
 import API_CONFIG from "@/config/API_CONFIG";
 import { Accordion, AccordionItem, Card, CardBody, CardHeader, Chip, Code, Divider, Snippet } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
@@ -290,6 +291,7 @@ const HomePage = () => {
 
   return (
     <div className="max-w-screen-2xl min-h-[120dvh] mx-auto mt-8 flex flex-col gap-8">
+      <PostmanButton />
       <Accordion variant="bordered">
         <AccordionItem key="intro" aria-label="intro" title={t("docs_intro.title")}>
           {t("docs_intro.description")}
