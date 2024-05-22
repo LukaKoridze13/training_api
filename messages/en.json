@@ -19,7 +19,7 @@
     "user": {
       "title": "User",
       "feed": "Post Feed",
-      "feed_desc": "",
+      "feed_desc": "You can retrieve posts from the feed using the principle of pagination. In the request, you can include the page and perPage parameters, which allow you to receive the desired pagination. Also, you can directly send a request to /post/feed, where in this case, page will be 1, and perPage will be 15.",
       "registration": "Registration",
       "registration_success": "Registration success",
       "login": "Authorization",
