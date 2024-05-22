@@ -11,6 +11,10 @@ const ka = {
   invalid_credentials: "ელ.ფოსტა ან პაროლი არასწორია",
   success: "მოთხოვნა წარმატებით შესრულდა",
   unauthorized: "არაავტორიზებული",
+  invalid_title: "სათაური არასწორია",
+  invalid_content: "შიგთავსი არასწორია",
+  not_found: "მონაცემები ვერ მოიძებნა",
+  forbidden: "წვდომა აკრძალულია",
 };
 
 const en: typeof ka = {
@@ -26,6 +30,10 @@ const en: typeof ka = {
   invalid_credentials: "Invalid credentials",
   success: "Request was successful",
   unauthorized: "Unauthorized",
+  invalid_title: "Title is invalid",
+  invalid_content: "Content is invalid",
+  not_found: "Data not found",
+  forbidden: "Access forbidden",
 };
 
 export default function getMessages(req: Request) {

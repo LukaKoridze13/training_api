@@ -14,6 +14,8 @@
     "unauthorized": "Unauthorized",
     "success": "Request success",
     "bad_request": "Some error not related to the exact key",
+    "not_found": "Data not found",
+    "forbidden": "Access forbidden",
     "user": {
       "title": "User",
       "registration": "Registration",
@@ -25,11 +27,19 @@
       "refresh_token": "New access token",
       "refresh_description": "After access token expires, you can use refresh token to get new access token. Refresh token should be passed in Authorization header as Bearer token.",
       "data": "User data"
+    },
+    "post": {
+      "title": "Post",
+      "create": "Create Post",
+      "get": "Get Post",
+      "update": "Update Post",
+      "delete": "Delete Post"
     }
   },
   "validations": {
     "min2": "Min 2 symbols",
     "email_used": "Email already used",
-    "required": "Field is required"
+    "required": "Field is required",
+    "invalid_field": "Field is invalid"
   }
 }

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import { Card, CardBody, CardHeader, Chip, Code, Divider, Snippet } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 
@@ -35,11 +35,11 @@ const Request = ({ method, path, requestBody, bodyObject, responses, description
       <Chip color={methodColor} size="lg">
         {method}
       </Chip>
-      <Snippet className="w-fit" variant="bordered" color="success" symbol={false}>
+      <Snippet className="w-fit" variant="bordered" symbol={false}>
         {API + path}
       </Snippet>
       {requestBody && (
-        <Card classNames={{ base: "border-green-600 border w-[600px]" }}>
+        <Card classNames={{ base: "border-green-600 border w-full" }}>
           <CardHeader className="flex gap-3">
             <p>Request Body {requestBody === "all" ? " - " + t("all_required") : " - " + t("required_color")}</p>
           </CardHeader>
@@ -47,26 +47,29 @@ const Request = ({ method, path, requestBody, bodyObject, responses, description
           <CardBody>{bodyObject && formatObjectToJSX(bodyObject, requestBody)}</CardBody>
         </Card>
       )}
-      <Card classNames={{ base: "border-green-600 border w-[600px]" }}>
+      <Card classNames={{ base: "border-green-600 border w-full" }}>
         <CardHeader className="flex gap-3">
           <p>Response</p>
         </CardHeader>
         <Divider />
         <CardBody className="flex flex-col gap-6">
           {responses.map((response, index) => (
-            <div key={index + "resp" + JSON.stringify(response)} className="flex flex-col gap-4">
-              <Chip color={response.status === "success" ? "success" : "danger"}>
-                {response.status === "success" ? "Success" : "Error"}: {response.code}
-              </Chip>
-              {formatObjectToJSX(response.body, response.required)}
-            </div>
+            <>
+              {auth && response.code > 401 && responses[index - 1].code < 401 && (
+                <div className="flex flex-col gap-4">
+                  <Chip color="danger">Error 401</Chip>
+                  {formatObjectToJSX({ error: t("unauthorized") })}
+                </div>
+              )}
+              <div key={index + "resp" + JSON.stringify(response)} className="flex flex-col gap-4">
+                <Chip color={response.status === "success" ? "success" : "danger"}>
+                  {response.status === "success" ? "Success" : "Error"}: {response.code}
+                </Chip>
+                {formatObjectToJSX(response.body, response.required)}
+              </div>
+            </>
           ))}
-          {auth && (
-            <div className="flex flex-col gap-4">
-              <Chip color="danger">Error 401</Chip>
-              {formatObjectToJSX({ error: t("unauthorized") })}
-            </div>
-          )}
+
           <div className="flex flex-col gap-4">
             <Chip color="danger">Error 500</Chip>
             {formatObjectToJSX({ error: t("internal_server_error") })}
@@ -78,45 +81,38 @@ const Request = ({ method, path, requestBody, bodyObject, responses, description
 };
 
 const formatObjectToJSX = (obj: any, required?: "all" | string[]) => {
+  const formatValue = (value: any, indentLevel: number) => {
+    if (typeof value === "object" && value !== null) {
+      return (
+        <>
+          <span>{"{"}</span>
+          {Object.entries(value).map(([nestedKey, nestedValue], index) => (
+            <div key={nestedKey} style={{ paddingLeft: `${indentLevel + 1 * 16}px` }}>
+              <span className={`${required && required !== "all" ? (!required.includes(nestedKey) ? "text-amber-500" : "text-emerald-500") : ""}`}>
+                {nestedKey}: {formatValue(nestedValue, indentLevel + 2)}
+                {index < Object.entries(value).length - 1 && ","}
+              </span>
+            </div>
+          ))}
+          <span>{"}"}</span>
+        </>
+      );
+    } else {
+      return <span>{typeof value === "string" ? `"${value}"` : value}</span>;
+    }
+  };
+
   return (
     <Code>
       <span>{"{"}</span>
-      {Object.entries(obj).map(([key, value], index) => {
-        if (typeof value === "object") {
-          return (
-            <>
-              <br />
-              <span>
-                &nbsp; <span className={`${required && required !== "all" ? (!required?.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>{key}:</span> {"{"}
-              </span>
-              {/* @ts-ignore */}
-              {Object.entries(value).map(([key, value], index) => (
-                <>
-                  <br />
-                  <span key={index} className={`${required && required !== "all" ? (!required?.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>
-                    {/* @ts-ignore */}
-                    &nbsp; &nbsp; {key}: {typeof value === "string" ? `"${value}"` : value} {index < Object.entries(value).length - 1 && ","}
-                  </span>
-                </>
-              ))}
-              <br />
-              <span>&nbsp; {"}"}</span>
-            </>
-          );
-        } else {
-          return (
-            <>
-              <br />
-              {/* @ts-ignore */}
-              <span key={index} className={`${required && required !== "all" ? (!required?.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>
-                {/* @ts-ignore */}
-                &nbsp; {key}: {typeof value === "string" ? `"${value}"` : value}{index < Object.entries(obj).length - 1 && ","}
-              </span>
-            </>
-          );
-        }
-      })}
-      <br />
+      {Object.entries(obj).map(([key, value], index) => (
+        <div key={key} className="pl-4">
+          <span className={`${required && required !== "all" ? (!required.includes(key) ? "text-amber-500" : "text-emerald-500") : ""}`}>
+            {key}: {formatValue(value, 1)}
+            {index < Object.entries(obj).length - 1 && ","}
+          </span>
+        </div>
+      ))}
       <span>{"}"}</span>
     </Code>
   );

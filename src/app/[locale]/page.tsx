@@ -13,7 +13,7 @@ interface RequestObject extends RequestProps {
 
 const HomePage = () => {
   const t = useTranslations();
-  const requests: RequestObject[] = [
+  const userRequests: RequestObject[] = [
     {
       title: t("docs.user.registration"),
       method: "POST",
@@ -67,6 +67,174 @@ const HomePage = () => {
       ],
     },
   ];
+  const postRequests: RequestObject[] = [
+    {
+      title: t("docs.post.get"),
+      method: "GET",
+      path: "/post/:id",
+      responses: [
+        {
+          status: "success",
+          code: 200,
+          body: {
+            _id: "664dc75f7ddf0ec704256947",
+            title: "Hello World!",
+            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit...",
+            author: {
+              _id: "664d24c128442f284480fe00",
+              name: "Luka",
+              surname: "Koridze",
+              email: "luka.koridze13@gmail.com",
+              createdAt: "2024-05-21T22:48:33.377Z",
+              updatedAt: "2024-05-21T22:48:33.377Z",
+              __v: 0,
+            },
+            createdAt: "2024-05-22T10:22:23.535Z",
+            updatedAt: "2024-05-22T10:22:23.535Z",
+            __v: 0,
+          },
+        },
+        {
+          status: "error",
+          code: 404,
+          body: {
+            error: t("docs.not_found"),
+          },
+        },
+      ],
+    },
+    {
+      title: t("docs.post.create"),
+      method: "POST",
+      path: "/post",
+      auth: true,
+      requestBody: "all",
+      bodyObject: { title: "Hello World!", password: "Lorem ipsum sit amen dolores..." },
+      responses: [
+        {
+          status: "success",
+          code: 200,
+          body: {
+            message: t("docs.success"),
+            post: {
+              _id: "664dc7967ddf0ec704256949",
+              title: "Hello World!",
+              content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+              author: {
+                _id: "664d24c128442f284480fe00",
+                name: "Luka",
+                surname: "Koridze",
+                email: "luka.koridze13@gmail.com",
+                createdAt: "2024-05-21T22:48:33.377Z",
+                updatedAt: "2024-05-21T22:48:33.377Z",
+                __v: 0,
+              },
+              createdAt: "2024-05-22T10:23:18.495Z",
+              updatedAt: "2024-05-22T10:23:18.495Z",
+              __v: 0,
+            },
+          },
+        },
+        {
+          status: "error",
+          code: 400,
+          body: {
+            error: t("docs.bad_request"),
+            errors: {
+              title: t("validations.invalid_field"),
+              content: t("validations.invalid_field"),
+            },
+          },
+          required: [],
+        },
+      ],
+    },
+    {
+      title: t("docs.post.update"),
+      method: "PUT",
+      path: "/post/:id",
+      auth: true,
+      requestBody: [],
+      bodyObject: { title: "Hello World!", password: "Lorem ipsum sit amen dolores..." },
+      responses: [
+        {
+          status: "success",
+          code: 200,
+          body: {
+            message: t("docs.success"),
+            post: {
+              _id: "664dc7967ddf0ec704256949",
+              title: "Hello World!",
+              content: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+              author: {
+                _id: "664d24c128442f284480fe00",
+                name: "Luka",
+                surname: "Koridze",
+                email: "luka.koridze13@gmail.com",
+                createdAt: "2024-05-21T22:48:33.377Z",
+                updatedAt: "2024-05-21T22:48:33.377Z",
+                __v: 0,
+              },
+              createdAt: "2024-05-22T10:23:18.495Z",
+              updatedAt: "2024-05-22T10:23:18.495Z",
+              __v: 0,
+            },
+          },
+        },
+        {
+          status: "error",
+          code: 400,
+          body: {
+            error: t("docs.bad_request"),
+          },
+        },
+        {
+          status: "error",
+          code: 403,
+          body: {
+            error: t("docs.forbidden"),
+          },
+        },
+        {
+          status: "error",
+          code: 404,
+          body: {
+            error: t("docs.not_found"),
+          },
+        },
+      ],
+    },
+    {
+      title: t("docs.post.delete"),
+      method: "DELETE",
+      path: "/post/:id",
+      auth: true,
+      responses: [
+        {
+          status: "success",
+          code: 200,
+          body: {
+            message: t("docs.success"),
+          },
+        },
+        {
+          status: "error",
+          code: 403,
+          body: {
+            error: t("docs.forbidden"),
+          },
+        },
+        {
+          status: "error",
+          code: 404,
+          body: {
+            error: t("docs.not_found"),
+          },
+        },
+      ],
+    },
+  ];
+
   return (
     <div className="max-w-screen-2xl min-h-[120dvh] mx-auto mt-8 flex flex-col gap-8">
       <Accordion variant="bordered">
@@ -74,10 +242,29 @@ const HomePage = () => {
           {t("docs_intro.description")}
         </AccordionItem>
       </Accordion>
+
       <Accordion variant="bordered">
         <AccordionItem title={t("docs.user.title")}>
           <Accordion variant="splitted">
-            {requests.map((request, index) => (
+            {userRequests.map((request, index) => (
+              <AccordionItem
+                key={index}
+                aria-label={request.title}
+                startContent={
+                  <div className="flex items-center text-lg font-medium gap-4">
+                    <span>{request.title}</span>
+                    {request.auth && <IoMdLock className="mb-1 text-red-500" />}
+                  </div>
+                }
+              >
+                <Request {...request} />
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </AccordionItem>
+        <AccordionItem title={t("docs.post.title")}>
+          <Accordion variant="splitted">
+            {postRequests.map((request, index) => (
               <AccordionItem
                 key={index}
                 aria-label={request.title}
