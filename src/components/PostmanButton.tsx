@@ -25,7 +25,7 @@ const PostmanButton = () => {
 
   return (
     <div
-      className="postman-run-button"
+      className="postman-run-button scale-[1.2]"
       data-postman-action="collection/fork"
       data-postman-visibility="public"
       data-postman-var-1="23546965-a2c8c7d6-46ef-44fa-b717-d376a6f033dd"

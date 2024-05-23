@@ -11,14 +11,16 @@ const enFont = Inter({ subsets: ["latin"] });
 export default function Header() {
   const t = useTranslations("navigation");
   return (
-    <Navbar shouldHideOnScroll>
+    <Navbar shouldHideOnScroll className="bg-zinc-950">
       <NavbarBrand>
-        <Image className="w-8 mr-3" src={Logo} alt="Luka Koridze" />
-        <p className={`text-lg ${enFont.className}`}>Training API</p>
+        <Link href="/" className="flex items-center gap-3">
+          <Image className="w-8" src={Logo} alt="Luka Koridze" />
+          <p className={`text-lg ${enFont.className}`}>Training API</p>
+        </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-          <Link href="/">{t("docs")}</Link>
+          <Link href="/api-docs">{t("docs")}</Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">

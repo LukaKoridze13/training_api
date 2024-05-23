@@ -2,6 +2,10 @@
   "navigation": {
     "docs": "API Docs"
   },
+  "hero": {
+    "docs": "The Training API is a practice RESTful API that anyone can use to learn how to work with APIs. It includes all the necessary details you will need for future API integrations in various projects. It is available to everyone. The API has its own API documentation and you can also use the ready-made Postman collection.",
+    "button": "API Docs"
+  },
   "docs_intro": {
     "title": "Introduction",
     "description": "Documentation helps you understand API operation principles and guides you through the integration process. The API is organized by topics, where you can find all requests related to this topic. Please note that the requests marked with a 'lock' symbol require authorization (with a Bearer Token obtained by the user when logging into the system). Also, in the examples of the given objects, all required fields are highlighted in bold. If all fields are in black text, it is optional. The API supports two languages, English (en) and Georgian (ka). To change the language, the Accept-Language header in the request must include the corresponding language code (en, ka)."

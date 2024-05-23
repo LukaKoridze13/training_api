@@ -1,3 +1,12 @@
+@import url("//cdn.web-fonts.ge/fonts/bpg-banner-caps/css/bpg-banner-caps.min.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.ka_up {
+  font-family: "BPG Banner Caps", sans-serif;
+}
+
+* {
+  color: #f2f2f2;
+}
