@@ -11,15 +11,15 @@ export async function GET(req: Request) {
     await ConnectMongo();
     const user = await checkRefresh(req);
     if (!user) {
-      return new Response(JSON.stringify({ error: messages.unauthorized }), { status: 401 });
+      return Response.json({ error: messages.unauthorized }, { status: 401 });
     }
     const foundUser = await UserModel.findOne({ _id: user._id }).select("-password");
     const payload = JSON.parse(JSON.stringify(foundUser));
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET || "", { expiresIn: API_CONFIG.accessTokenExpiration });
     const expiresIn = API_CONFIG.accessTokenExpiration;
-    return new Response(JSON.stringify({ message: messages.success, accessToken, expiresIn }), { status: 200 });
+    return Response.json({ message: messages.success, accessToken, expiresIn }, { status: 200 });
   } catch (e) {
     console.error(e);
-    return new Response(JSON.stringify({ error: messages.internal_server_error }), { status: 500 });
+    return Response.json({ error: messages.internal_server_error }, { status: 500 });
   }
 }

@@ -14,22 +14,22 @@ export async function POST(req: Request) {
     await ConnectMongo();
     const user = await checkAuthorizedUser(req);
     if (!user) {
-      return new Response(JSON.stringify({ error: messages.unauthorized }), { status: 401 });
+      return Response.json({ error: messages.unauthorized }, { status: 401 });
     }
 
     const body = (await req.json()) as I_CreatePost;
     const { title, content } = body;
 
     if (!title || !content) {
-      return new Response(JSON.stringify({ error: messages.all_fields_required + " title, content." }), { status: 400 });
+      return Response.json({ error: messages.all_fields_required + " title, content." }, { status: 400 });
     }
 
     if (title.trim() === "") {
-      return new Response(JSON.stringify({ error: messages.invalid_title }), { status: 400 });
+      return Response.json({ error: messages.invalid_title }, { status: 400 });
     }
 
     if (content.trim() === "") {
-      return new Response(JSON.stringify({ error: messages.invalid_content }), { status: 400 });
+      return Response.json({ error: messages.invalid_content }, { status: 400 });
     }
 
     const newPost = new PostModel({
@@ -40,9 +40,9 @@ export async function POST(req: Request) {
 
     await newPost.save();
     const post = await PostModel.findOne({ _id: newPost._id }).populate("author", "-password");
-    return new Response(JSON.stringify({ message: messages.success, post }), { status: 201 });
+    return Response.json({ message: messages.success, post }, { status: 201 });
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify({ error: messages.internal_server_error }), { status: 500 });
+    return Response.json({ error: messages.internal_server_error }, { status: 500 });
   }
 }

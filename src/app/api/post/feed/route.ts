@@ -16,8 +16,8 @@ export async function GET(req: Request) {
     const totalPosts = await PostModel.countDocuments();
     const totalPages = Math.ceil(totalPosts / perPage);
 
-    return new Response(JSON.stringify({ posts, totalPages, currentPage: page, perPage }), { status: 200, headers: { "Content-Type": "application/json" }});
+    return Response.json({ posts, totalPages, currentPage: page, perPage }, { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ error: messages.internal_server_error }), { status: 500 });
+    return Response.json({ error: messages.internal_server_error }, { status: 500 });
   }
 }

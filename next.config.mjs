@@ -10,6 +10,14 @@ const nextConfig = {
         source: "/api/:path*",
         headers: [
           {
+            key: "Access-Control-Allow-Origin",
+            value: "*",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
+          },
+          {
             key: "Content-Type",
             value: "application/json",
           },
