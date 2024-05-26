@@ -36,6 +36,7 @@
     },
     "post": {
       "title": "Post",
+      "feed": "Post Feed",
       "feed_desc": "You can retrieve the posts feed using the pagination principle. In the request, you can include the page and perPage parameters, which will give you the desired pagination. You can also send the request directly to /post/feed, in which case page will be 1 and perPage will be 15.",
       "create": "Create Post",
       "get": "Get Post",
