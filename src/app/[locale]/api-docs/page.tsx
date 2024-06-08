@@ -162,7 +162,7 @@ const ApiDocs = () => {
       path: "/post",
       auth: true,
       requestBody: "all",
-      bodyObject: { title: "Hello World!", password: "Lorem ipsum sit amen dolores..." },
+      bodyObject: { title: "Hello World!", content: "Lorem ipsum sit amen dolores..." },
       responses: [
         {
           status: "success",
@@ -208,7 +208,7 @@ const ApiDocs = () => {
       path: "/post/:id",
       auth: true,
       requestBody: [],
-      bodyObject: { title: "Hello World!", password: "Lorem ipsum sit amen dolores..." },
+      bodyObject: { title: "Hello World!", content: "Lorem ipsum sit amen dolores..." },
       responses: [
         {
           status: "success",

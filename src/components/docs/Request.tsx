@@ -29,6 +29,8 @@ const Request = ({ method, path, requestBody, bodyObject, responses, description
   if (method === "PUT") methodColor = "warning";
   if (method === "DELETE") methodColor = "danger";
   const API = process.env.NEXT_PUBLIC_API;
+  const highestCode = Math.max(...responses.map((response) => response.code));
+  const minCode = Math.min(...responses.map((response) => response.code));
   return (
     <div className="flex flex-col gap-3">
       {description && <p>{description}</p>}
@@ -53,15 +55,15 @@ const Request = ({ method, path, requestBody, bodyObject, responses, description
         </CardHeader>
         <Divider />
         <CardBody className="flex flex-col gap-6">
+          {auth && minCode > 401 && (
+            <div className="flex flex-col gap-4">
+              <Chip color="danger">Error 401</Chip>
+              {formatObjectToJSX({ error: t("unauthorized") })}
+            </div>
+          )}
           {responses.map((response, index) => (
             <>
-              {Boolean(auth && response.code > 401 && responses[index - 1].code < 401 && responses.length !== 2) && (
-                <div className="flex flex-col gap-4">
-                  <Chip color="danger">Error 401</Chip>
-                  {formatObjectToJSX({ error: t("unauthorized") })}
-                </div>
-              )}
-              {Boolean(auth && responses.length === 2) && (
+              {Boolean(auth && response.code > 401 && responses[index - 1].code < 401) && (
                 <div className="flex flex-col gap-4">
                   <Chip color="danger">Error 401</Chip>
                   {formatObjectToJSX({ error: t("unauthorized") })}
@@ -75,6 +77,12 @@ const Request = ({ method, path, requestBody, bodyObject, responses, description
               </div>
             </>
           ))}
+          {auth && highestCode < 401 && (
+            <div className="flex flex-col gap-4">
+              <Chip color="danger">Error 401</Chip>
+              {formatObjectToJSX({ error: t("unauthorized") })}
+            </div>
+          )}
 
           <div className="flex flex-col gap-4">
             <Chip color="danger">Error 500</Chip>
