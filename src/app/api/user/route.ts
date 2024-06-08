@@ -36,34 +36,30 @@ export async function POST(req: Request) {
     const body = (await req.json()) as I_CreateUser;
     const { name, surname, email, password, repeat_password } = body;
 
-    if (!name || !surname || !email || !password || !repeat_password) {
-      return Response.json({ error: messages.all_fields_required + " name, surname, email, password, repeat_password" }, { status: 400 });
-    }
+    const errors: { [key: string]: string } = {};
 
-    if (name.length < 2) {
-      return Response.json({ errors: { name: messages.min } }, { status: 400 });
-    }
+    if (!name) errors.name = messages.all_fields_required + " name";
+    if (!surname) errors.surname = messages.all_fields_required + " surname";
+    if (!email) errors.email = messages.all_fields_required + " email";
+    if (!password) errors.password = messages.all_fields_required + " password";
+    if (!repeat_password) errors.repeat_password = messages.all_fields_required + " repeat_password";
 
-    if (surname.length < 2) {
-      return Response.json({ errors: { surname: messages.min } }, { status: 400 });
-    }
-
-    if (password.length < 6) {
-      return Response.json({ errors: { password: messages.min6 } }, { status: 400 });
-    }
-
-    if (password !== repeat_password) {
-      return Response.json({ errors: { repeat_password: messages.passwords_do_not_match } }, { status: 400 });
-    }
+    if (name && name.length < 2) errors.name = messages.min;
+    if (surname && surname.length < 2) errors.surname = messages.min;
+    if (password && password.length < 6) errors.password = messages.min6;
+    if (password !== repeat_password) errors.repeat_password = messages.passwords_do_not_match;
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailRegex.test(email)) {
-      return Response.json({ errors: { email: messages.invalid_email } }, { status: 400 });
+    if (email && !emailRegex.test(email)) errors.email = messages.invalid_email;
+
+    if (Object.keys(errors).length > 0) {
+      return Response.json({ errors }, { status: 400 });
     }
 
     const userExists = await UserModel.findOne({ email });
     if (userExists) {
-      return Response.json({ errors: { email: messages.email_used } }, { status: 400 });
+      errors.email = messages.email_used;
+      return Response.json({ errors }, { status: 400 });
     }
 
     const hashedPassword = await hashPassword(password);
