@@ -55,12 +55,13 @@ const Request = ({ method, path, requestBody, bodyObject, responses, description
         <CardBody className="flex flex-col gap-6">
           {responses.map((response, index) => (
             <>
-              {auth && response.code > 401 && responses[index - 1].code < 401 && (
-                <div className="flex flex-col gap-4">
-                  <Chip color="danger">Error 401</Chip>
-                  {formatObjectToJSX({ error: t("unauthorized") })}
-                </div>
-              )}
+              {Boolean(auth && response.code > 401 && responses[index - 1].code < 401) ||
+                (Boolean(auth && responses.length===2) && (
+                  <div className="flex flex-col gap-4">
+                    <Chip color="danger">Error 401</Chip>
+                    {formatObjectToJSX({ error: t("unauthorized") })}
+                  </div>
+                ))}
               <div key={index + "resp" + JSON.stringify(response)} className="flex flex-col gap-4">
                 <Chip color={response.status === "success" ? "success" : "danger"}>
                   {response.status === "success" ? "Success" : "Error"}: {response.code}
