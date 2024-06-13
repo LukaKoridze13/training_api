@@ -1,5 +1,6 @@
 import ConnectMongo from "@/mongo/ConnectMongo";
 import PostModel from "@/mongo/models/PostModel";
+import ReactionModel from "@/mongo/models/ReactionModel";
 import getMessages from "../../getMessages";
 
 export async function GET(req: Request) {
@@ -16,8 +17,23 @@ export async function GET(req: Request) {
     const totalPosts = await PostModel.countDocuments();
     const totalPages = Math.ceil(totalPosts / perPage);
 
-    return Response.json({ posts, totalPages, currentPage: page, perPage }, { status: 200 });
+    const postsWithReactions = await Promise.all(
+      posts.map(async (post) => {
+        const postId = post._id;
+        const likesCount = await ReactionModel.countDocuments({ post: postId, reaction: "like" });
+        const dislikesCount = await ReactionModel.countDocuments({ post: postId, reaction: "dislike" });
+
+        return {
+          ...post.toObject(),
+          likes: likesCount,
+          dislikes: dislikesCount,
+        };
+      })
+    );
+
+    return Response.json({ posts: postsWithReactions, totalPages, currentPage: page, perPage }, { status: 200 });
   } catch (error) {
+    console.error(error);
     return Response.json({ error: messages.internal_server_error }, { status: 500 });
   }
 }

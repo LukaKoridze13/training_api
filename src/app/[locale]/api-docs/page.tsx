@@ -92,6 +92,8 @@ const ApiDocs = () => {
             createdAt: "2024-05-22T10:22:23.535Z",
             updatedAt: "2024-05-22T10:22:23.535Z",
             __v: 0,
+            likes: 324,
+            dislikes: 19,
           },
         },
         {
@@ -130,6 +132,8 @@ const ApiDocs = () => {
                 createdAt: "2024-05-22T10:40:27.948Z",
                 updatedAt: "2024-05-22T10:40:27.948Z",
                 __v: 0,
+                likes: 324,
+                dislikes: 19,
               },
               {
                 _id: "664dc7967ddf0ec704256949",
@@ -144,6 +148,8 @@ const ApiDocs = () => {
                   updatedAt: "2024-05-21T22:48:33.377Z",
                   __v: 0,
                 },
+                likes: 324,
+                dislikes: 19,
                 createdAt: "2024-05-22T10:23:18.495Z",
                 updatedAt: "2024-05-22T11:36:33.641Z",
                 __v: 0,
@@ -287,6 +293,70 @@ const ApiDocs = () => {
       ],
     },
   ];
+  const reactionRequests: RequestObject[] = [
+    {
+      title: t("docs.reaction.post"),
+      method: "POST",
+      description: t("docs.reaction.variants"),
+      path: "/reaction",
+      auth: true,
+      requestBody: "all",
+      bodyObject: {
+        postId: "664dc7967ddf0ec704256949",
+        reaction: "like",
+      },
+      responses: [
+        {
+          status: "success",
+          code: 200,
+          body: {
+            message: t("docs.success"),
+          },
+        },
+        {
+          status: "error",
+          code: 400,
+          body: {
+            error: t("docs.bad_request"),
+            errors: {
+              postId: t("validations.invalid_field"),
+              reaction: t("validations.invalid_field"),
+            },
+          },
+        },
+      ],
+    },
+    {
+      title: t("docs.reaction.delete"),
+      method: "DELETE",
+      path: "/reaction/:id",
+      auth: true,
+      responses: [
+        {
+          status: "success",
+          code: 200,
+          body: {
+            message: t("docs.success"),
+          },
+        },
+        {
+          status: "error",
+          code: 403,
+          body: {
+            error: t("docs.forbidden"),
+          },
+        },
+        {
+          status: "error",
+          code: 404,
+          body: {
+            error: t("docs.not_found"),
+          },
+        },
+      ],
+    },
+  ];
+
   return (
     <div className="max-w-screen-2xl min-h-[120dvh] mx-auto mt-8 flex flex-col gap-8">
       <Accordion variant="bordered">
@@ -317,6 +387,24 @@ const ApiDocs = () => {
         <AccordionItem title={t("docs.post.title")}>
           <Accordion variant="splitted">
             {postRequests.map((request, index) => (
+              <AccordionItem
+                key={index}
+                aria-label={request.title}
+                startContent={
+                  <div className="flex items-center text-lg font-medium gap-4">
+                    <span>{request.title}</span>
+                    {request.auth && <IoMdLock className="mb-1 text-red-500" />}
+                  </div>
+                }
+              >
+                <Request {...request} />
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </AccordionItem>
+        <AccordionItem title={t("docs.reaction.title")}>
+          <Accordion variant="splitted">
+            {reactionRequests.map((request, index) => (
               <AccordionItem
                 key={index}
                 aria-label={request.title}

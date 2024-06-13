@@ -10,6 +10,13 @@
     "title": "Introduction",
     "description": "Documentation helps you understand API operation principles and guides you through the integration process. The API is organized by topics, where you can find all requests related to this topic. Please note that the requests marked with a 'lock' symbol require authorization (with a Bearer Token obtained by the user when logging into the system). Also, in the examples of the given objects, all required fields are highlighted in bold. If all fields are in black text, it is optional. The API supports two languages, English (en) and Georgian (ka). To change the language, the Accept-Language header in the request must include the corresponding language code (en, ka)."
   },
+
+  "validations": {
+    "min2": "Min 2 symbols",
+    "email_used": "Email already used",
+    "required": "Field is required",
+    "invalid_field": "Field is invalid"
+  },
   "docs": {
     "all_required": "All fields required",
     "required_color": "Required fields are marked with green color",
@@ -42,12 +49,12 @@
       "get": "Get Post",
       "update": "Update Post",
       "delete": "Delete Post"
+    },
+    "reaction": {
+      "title": "Reactions",
+      "post": "Add / Change Reaction",
+      "delete": "Remove reaction",
+      "variants": "Reaction can be either like or dislike. When user has already reacted post, new reaction will automatically remove old one."
     }
-  },
-  "validations": {
-    "min2": "Min 2 symbols",
-    "email_used": "Email already used",
-    "required": "Field is required",
-    "invalid_field": "Field is invalid"
   }
 }

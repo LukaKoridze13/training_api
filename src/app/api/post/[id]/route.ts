@@ -2,6 +2,7 @@ import ConnectMongo from "@/mongo/ConnectMongo";
 import PostModel, { D_Post } from "@/mongo/models/PostModel";
 import checkAuthorizedUser from "../../checkAuthorizedUser";
 import getMessages from "../../getMessages";
+import ReactionModel from "@/mongo/models/ReactionModel";
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const messages = getMessages(req);
@@ -14,7 +15,16 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       return Response.json({ error: messages.not_found }, { status: 404 });
     }
 
-    return Response.json(post, { status: 200 });
+    const likesCount = await ReactionModel.countDocuments({ post: postId, reaction: "like" });
+    const dislikesCount = await ReactionModel.countDocuments({ post: postId, reaction: "dislike" });
+
+    const postWithReactions = {
+      ...post.toObject(),
+      likes: likesCount,
+      dislikes: dislikesCount,
+    };
+
+    return Response.json(postWithReactions, { status: 200 });
   } catch (error) {
     console.error(error);
     return Response.json({ error: messages.internal_server_error }, { status: 500 });
